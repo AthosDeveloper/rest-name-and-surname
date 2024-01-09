@@ -1,4 +1,5 @@
-import { User, UserRepository } from "../model/User";
+import { User} from "../model/User";
+import { UserRepository } from "./UserRepository";
 export class UserRepositoryImpl implements UserRepository {
     private users: User[] = [];
     findAll(): User[] {
