@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "useUnknownInCatchVariables": false,
+        "strictFunctionTypes": false,
+        "strict": false,  // Turn off strict type checking
+        "noImplicitAny": false  // Allow variables with no type annotations to implicitly have an 'any' type
+
+    }
+}
