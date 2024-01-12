@@ -6,7 +6,7 @@ export class UserController {
     constructor(userRepository: UserRepository) {
         this.userRepository = userRepository;
     }
-    getUsers(req: Request, res: Response): void {
+        getUsers(req: Request, res: Response): void {
         const users = this.userRepository.findAll();
         res.json(users);
     }
