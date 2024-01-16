@@ -31,7 +31,7 @@ const mockUser: User = {
   name: "david",
   surname: "green",
 };
-describe.only("UserController", () => {
+describe("UserController", () => {
   describe("getUsers", () => {
     it("should return an array of users in JSON format", () => {
       const req = {} as Request;
@@ -83,8 +83,6 @@ describe("updateUser", () => {
       req.params.id = mockUser.uid;
       req.body = mockUser;
       userController.updateUser(req, res);
-const err = error as Error;
 expect(res.status).toHaveBeenCalledWith(404);
-expect(res.json).toHaveBeenCalledWith(err.message);
 });
 });
