@@ -6,9 +6,9 @@ export class UserController {
     constructor(userRepository: UserRepository) {
         this.userRepository = userRepository;
     }
-        getUsers(req: Request, res: Response): void {
+    getUsers(req: Request, res: Response): void {
         const users = this.userRepository.findAll();
-         res.json(users);
+        res.json(users);
     };
     createUser(req: Request, res: Response): void {
         const user: User = req.body;
@@ -24,7 +24,6 @@ export class UserController {
             res.status(404).json({ message: "user not found" });
         }
     };
-    
     updateUser(req: Request, res: Response): void {
         const id = req.params?.id;
         const user: User = req.body;
@@ -32,8 +31,7 @@ export class UserController {
             this.userRepository.update(id, user);
             res.status(200).json(user);
         } catch (error) {
-            
-            res.status(404).json({ message: "user not found"});
+            res.status(404).json({ message: "user not found" });
         }
     }
 };
