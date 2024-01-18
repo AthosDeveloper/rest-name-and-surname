@@ -38,13 +38,13 @@ const config: Config = {
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "v8",
 
-  // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover"
-  // ],
+   //A list of reporter names that Jest uses when writing coverage reports
+   coverageReporters: [
+     "json",
+   "text",
+     "lcov",
+     "clover"
+   ],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
@@ -126,7 +126,7 @@ const config: Config = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+   //rootDir: undefined
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [

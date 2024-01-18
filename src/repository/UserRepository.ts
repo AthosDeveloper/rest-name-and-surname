@@ -1,4 +1,5 @@
 import { User } from "../model/User";
+import { uid } from "uid";
 export interface UserRepository {
 
     findAll(): User[];
