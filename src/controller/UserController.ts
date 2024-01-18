@@ -6,16 +6,15 @@ export class UserController {
     constructor(userRepository: UserRepository) {
         this.userRepository = userRepository;
     }
-        getUsers(req: Request, res: Response): void {
+    getUsers(req: Request, res: Response): void {
         const users = this.userRepository.findAll();
         res.json(users);
-    }
+    };
     createUser(req: Request, res: Response): void {
         const user: User = req.body;
         this.userRepository.save(user);
-        res.status(201).json(user);
-    }
-
+        res.status(200).json(user);
+    };
     getUserById(req: Request, res: Response): void {
         const id = req.params.id;
         const user = this.userRepository.findById(id);
@@ -24,16 +23,15 @@ export class UserController {
         } else {
             res.status(404).json({ message: "user not found" });
         }
-    }
+    };
     updateUser(req: Request, res: Response): void {
-        const id = req.params.id;
+        const id = req.params?.id;
         const user: User = req.body;
         try {
             this.userRepository.update(id, user);
+            res.status(200).json(user);
         } catch (error) {
-            const err = error as Error;
-            
-            res.status(404).json({ message: err.message });
+            res.status(404).json({ message: "user not found" });
         }
     }
-}
+};

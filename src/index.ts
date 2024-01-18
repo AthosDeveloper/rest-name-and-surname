@@ -7,7 +7,6 @@ import { userRoutes } from "./routs/User-routes";
 const app = express();
 const userRepository = new UserRepositoryImpl();
 const userController = new UserController(userRepository);
-app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 userRoutes(app, userController);
