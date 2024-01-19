@@ -3,7 +3,7 @@ import { User } from "../model/User";
 import { UserRepository } from "./UserRepository";
 export class UserRepositoryImpl implements UserRepository {
 
-     private users: User[] = [];
+      users: User[] = [];
     findAll(): User[] {
         return this.users;
     }

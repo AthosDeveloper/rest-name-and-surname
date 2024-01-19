@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { User } from "../model/User";
-import { UserController } from "../controller/UserController";
-import { UserRepository } from "../repository/UserRepository";
-import { uid } from "uid";
-jest.mock("../repository/UserRepository");
+import { User } from "../../model/User";
+import { UserController} from "../../controller/UserController";
+import { UserRepository} from "../../repository/UserRepository";
+jest.mock("../../repository/UserRepository");
 const mockUserRepository: UserRepository = {
   findAll: jest.fn(),
   save: jest.fn(),
