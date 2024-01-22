@@ -1,5 +1,7 @@
+import {uid} from 'uid';
+type uid = string;
 export interface User{
-    id: string;
+    uid: uid;
     name: string;
     surname: string;
 
