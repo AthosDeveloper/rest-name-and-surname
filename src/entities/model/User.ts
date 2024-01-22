@@ -3,5 +3,6 @@ type uid = string;
 export interface User{
     uid: uid;
     name: string;
-surname: string;
+    surname: string;
+
 }
