@@ -1,7 +1,5 @@
-import {uid} from 'uid';
-type uid = string;
 export interface User{
-    uid: uid;
+    id: string;
     name: string;
     surname: string;
 
