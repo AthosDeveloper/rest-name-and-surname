@@ -5,6 +5,6 @@ export class UpdateUserCommand implements Partial<User> {
         public name?: string,
         public surname?: string,
     ){
-        return this
+        return this;
     }
-}
+};

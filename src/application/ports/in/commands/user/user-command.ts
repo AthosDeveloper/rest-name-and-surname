@@ -5,7 +5,7 @@ export class CreateUserCommand implements User {
         public id: string,
         public name: string,
         public surname: string,
-    ){
-        return this
+    ) {
+        return this;
     }
-}
+};

@@ -1,103 +1,82 @@
 import { Request, Response } from "express";
-import { User } from "../../model/User";
-import { UserController} from "../../controller/UserController";
-import { UserRepository} from "../../repository/UserRepository";
-jest.mock("../../repository/UserRepository");
-const mockUserRepository: UserRepository = {
+import UserUseCase from "../../application/ports/in/use-cases/user/user-usecase";
+import { CreateUserCommand } from "../../application/ports/in/commands/user/user-command";
+import { UpdateUserCommand } from "../../application/ports/in/commands/user/update-user-comman";
+import { UserController } from "../../adapters/in/controller/user/controller";
+import FindUserByIdCommand from "../../application/ports/in/commands/user/find-user-by-id-command";
+jest.mock("../../application/ports/in/use-cases/user/user-usecase");
+const mockUserUseCase: Partial<UserUseCase> = {
   findAll: jest.fn(),
-  save: jest.fn(),
-  findById: jest.fn(),
-  update: jest.fn(),
+  create: jest.fn(),
+  getUserById: jest.fn(),
+  updateUser: jest.fn(),
 };
-
-const userController = new UserController(mockUserRepository);
+const mockRequest = (body = {}, params = {}) => ({
+  body,
+  params,
+}) as unknown as Request;
 
 const mockResponse = () => {
-  const mockRes = {
-    json: jest.fn(),
-    send: jest.fn()
-  };
-  const res = {} as Response;
-  res.status = jest.fn().mockReturnValue(mockRes);
-  res.json = mockRes.json;
-  res.send = mockRes.send;
-  return res;
+  const res: Partial<Response> = {};
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+  return res as Response;
 };
-const mockRequest = () => {
-  const req = {} as Request;
-  req.body = {};
-  req.params = {};
-  return req;
-};
-const mockUser: User = {
-  uid: "1",
-  name: "david",
-  surname: "green",
-};
-beforeEach(() => {
-  jest.clearAllMocks();
-  jest.restoreAllMocks();
-});
-describe("UserController", () => {
-  describe("getUsers", () => {
-    it("should return an array of users in JSON format", () => {
-      const req = mockRequest();
-      const res = mockResponse();
 
-      //@ts-ignore
-      mockUserRepository.findAll.mockReturnValue([mockUser]);
-      userController.getUsers(req, res);
-      expect(res.json).toHaveBeenCalledWith([mockUser]);
+describe.only('UserController', () => {
+  let controller: UserController;
+  let req: Request;
+  let res: Response;
+  beforeEach(() => {
+    controller = new UserController(mockUserUseCase as UserUseCase);
+    res = mockResponse();
+  });
+  describe('getUsers', () => {
+    it('should return a list of users', async () => {
+      const users = [{ id: '1', name: 'John', surname: 'Doe' }];
+      (mockUserUseCase.findAll as jest.Mock).mockResolvedValue(users);
+      await controller.getUsers(req, res);
+
+      expect(res.json).toHaveBeenCalledWith(users);
     });
   });
-  describe("getUserById", () => {
-    it("should be return a user id in JSON format", () => {
-      const req = mockRequest();
-      const res = mockResponse();
-      req.params.id = mockUser.uid;
-      req.body = mockUser;
-      //@ts-ignore
-      mockUserRepository.findById.mockReturnValue(mockUser);
-      userController.getUserById(req, res);
-      expect(res.json).toHaveBeenCalledWith(mockUser);
+
+  describe('createUser', () => {
+    it('should create a user and return 201 status', async () => {
+      const user = { id: '1', name: 'John', surname: 'Doe' };
+      req = mockRequest(user);
+
+      await controller.createUser(req, res);
+
+      expect(mockUserUseCase.create).toHaveBeenCalledWith(expect.any(CreateUserCommand));
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(user);
     });
-    it("should return error 404 if user not found", () => {
-      const req = mockRequest();
-      const res = mockResponse();
-      req.params.id = null;
-      //@ts-ignore
-      mockUserRepository.findById.mockReturnValue(undefined);
-      userController.getUserById(req, res);
+  });
+
+  describe('getUserById', () => {
+    it('should return a user if found', async () => {
+      const user = { id: '1', name: 'John', surname: 'Doe' };
+      req = mockRequest({}, { id: '1' });
+      (mockUserUseCase.getUserById as jest.Mock).mockResolvedValue(Promise.resolve(user));
+      await controller.getUserById(req, res);
+      expect(res.json).toHaveBeenCalledWith(user);
+    });
+    it('should return 404 if user not found', async () => {
+      req = mockRequest({}, { id: '1' });
+      (mockUserUseCase.getUserById as jest.Mock).mockResolvedValue(null);
+      await controller.getUserById(req, res);
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ message: "user not found" });
     });
   });
-  describe("createUser", () => {
-    it("should be created a user in JSON format", () => {
-      const req = mockRequest();
-      const res = mockResponse();
-      req.body = mockUser;
-
-      //@ts-ignore
-      mockUserRepository.save.mockReturnValue(mockUser);
-      userController.createUser(req, res);
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(mockUser);
-    });
-  });
-  describe("updateUser", () => {
-
-    it("should update a User with success", () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      req.params.id = mockUser.uid;
-      req.body = mockUser;
-      //@ts-ignore 
-      mockUserRepository.update.mockReturnValue(mockUser);
-      userController.updateUser(req, res);
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(mockUser);
+  describe('updateUser', () => {
+    it('should update a user and return the updated user', async () => {
+      const user = { name: 'Jane', surname: 'Doe' };
+      req = mockRequest(user, { id: '1' });
+      await controller.updateUser(req, res);
+      expect(mockUserUseCase.updateUser).toHaveBeenCalledWith('1', expect.any(UpdateUserCommand));
+      expect(res.json).toHaveBeenCalledWith(user);
     });
   });
 });
